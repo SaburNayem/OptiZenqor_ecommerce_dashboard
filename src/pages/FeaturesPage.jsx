@@ -1,14 +1,17 @@
-import { DashboardSection } from "../components/ui";
+import { useOutletContext } from "react-router-dom";
+import DashboardSection from "../shared/ui/DashboardSection";
 
-function FeaturesPage({ features, toggleFeature }) {
+function FeaturesPage() {
+  const dashboard = useOutletContext();
+
   return (
     <div className="page-stack">
       <DashboardSection
         title="Feature rollout control"
-        subtitle="Own feature flags, release exposure, and staged rollout decisions from a focused page."
+        subtitle="Separate release management for product, commerce, and content initiatives."
       >
         <div className="feature-list">
-          {features.map((feature) => (
+          {dashboard.features.map((feature) => (
             <article key={feature.id} className="feature-card">
               <div className="feature-topline">
                 <div>
@@ -20,7 +23,6 @@ function FeaturesPage({ features, toggleFeature }) {
                 <button
                   type="button"
                   className={`toggle-pill ${feature.enabled ? "enabled" : ""}`}
-                  onClick={() => toggleFeature(feature.id)}
                 >
                   {feature.enabled ? "Enabled" : "Disabled"}
                 </button>

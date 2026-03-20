@@ -1,55 +1,45 @@
-import { DashboardSection, QuickSummary, StatusBadge } from "../components/ui";
+import { useOutletContext } from "react-router-dom";
+import InsightCard from "../shared/ui/InsightCard";
+import DashboardSection from "../shared/ui/DashboardSection";
+import SummaryGrid from "../shared/ui/SummaryGrid";
+import StatusBadge from "../shared/ui/StatusBadge";
 
-function OverviewPage({
-  stats,
-  users,
-  products,
-  posts,
-  features,
-  activityFeed,
-  statusToneMap,
-}) {
-  const spotlightCards = [
-    {
-      title: "User governance",
-      value: `${users.filter((user) => user.status === "Active").length} active accounts`,
-      description: "Control access, review team roles, and keep account health visible.",
-    },
-    {
-      title: "Catalog health",
-      value: `${products.filter((product) => product.status === "Published").length} products live`,
-      description: "See inventory pressure and publishing state before customers do.",
-    },
-    {
-      title: "Editorial flow",
-      value: `${posts.filter((post) => post.status === "Review").length} waiting review`,
-      description: "Move stories from drafts to campaigns with clearer ownership.",
-    },
-  ];
+function OverviewPage() {
+  const dashboard = useOutletContext();
 
   return (
     <div className="page-stack">
-      <QuickSummary items={stats} />
+      <SummaryGrid items={dashboard.stats} />
 
       <section className="card-grid three-up">
-        {spotlightCards.map((card) => (
-          <article key={card.title} className="insight-card">
-            <p className="eyebrow">Overview</p>
-            <h3>{card.title}</h3>
-            <strong>{card.value}</strong>
-            <p>{card.description}</p>
-          </article>
-        ))}
+        <InsightCard
+          eyebrow="Storefront"
+          title="Catalog readiness"
+          value={`${dashboard.products.filter((item) => item.status === "Published").length} products live`}
+          description="Products and categories taken from the existing web app are now visible in admin summary form."
+        />
+        <InsightCard
+          eyebrow="Customers"
+          title="Account health"
+          value={`${dashboard.users.filter((item) => item.status === "Active").length} active users`}
+          description="Support, account, and order-oriented user operations are separated from catalog tasks."
+        />
+        <InsightCard
+          eyebrow="Platform"
+          title="System coverage"
+          value={`${dashboard.apiConfig.endpoints.length} monitored endpoints`}
+          description="Auth, category, favorite, cart, and product routes from the app are represented in system visibility."
+        />
       </section>
 
       <section className="content-grid">
         <div className="primary-column">
           <DashboardSection
-            title="Recent operations"
-            subtitle="The fastest view into what changed across the back office."
+            title="Operations feed"
+            subtitle="Current activity across catalog, content, and auth service operations."
           >
             <div className="activity-list">
-              {activityFeed.map((item) => (
+              {dashboard.activityFeed.map((item) => (
                 <article key={item} className="activity-item">
                   <span className="activity-dot" />
                   <p>{item}</p>
@@ -61,30 +51,18 @@ function OverviewPage({
 
         <div className="secondary-column">
           <DashboardSection
-            title="Feature snapshot"
-            subtitle="Current rollout health across live and staged features."
+            title="Auth flow health"
+            subtitle="A compact view of the service behaviors defined in the mobile app."
           >
             <div className="feature-list">
-              {features.map((feature) => (
-                <article key={feature.id} className="feature-card">
+              {dashboard.authFlows.map((flow) => (
+                <article key={flow.key} className="feature-card">
                   <div className="feature-topline">
                     <div>
-                      <h3>{feature.name}</h3>
-                      <p>
-                        {feature.owner} • {feature.exposure}
-                      </p>
+                      <h3>{flow.key}</h3>
+                      <p>{flow.detail}</p>
                     </div>
-                    <StatusBadge
-                      value={feature.enabled ? "Enabled" : "Draft"}
-                      statusToneMap={statusToneMap}
-                    />
-                  </div>
-                  <div className="rollout-row">
-                    <span>Rollout</span>
-                    <strong>{feature.rollout}%</strong>
-                  </div>
-                  <div className="progress-track">
-                    <span style={{ width: `${feature.rollout}%` }} />
+                    <StatusBadge value={flow.status} toneMap={dashboard.toneMap} />
                   </div>
                 </article>
               ))}

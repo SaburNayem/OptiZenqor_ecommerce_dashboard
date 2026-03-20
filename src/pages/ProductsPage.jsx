@@ -1,24 +1,44 @@
-import { DashboardSection, DataTable, StatusBadge } from "../components/ui";
+import { useOutletContext } from "react-router-dom";
+import DashboardSection from "../shared/ui/DashboardSection";
+import DataTable from "../shared/ui/DataTable";
+import StatusBadge from "../shared/ui/StatusBadge";
+import InsightCard from "../shared/ui/InsightCard";
 
-function ProductsPage({
-  products,
-  productForm,
-  setProductForm,
-  handleProductSubmit,
-  cycleProductStatus,
-  statusToneMap,
-}) {
+function ProductsPage() {
+  const dashboard = useOutletContext();
+
   return (
     <div className="page-stack">
+      <section className="card-grid">
+        <InsightCard
+          eyebrow="Catalog"
+          title="Featured candidates"
+          value={dashboard.products.slice(0, 4).length}
+          description="The leading storefront products are ready for homepage and campaign placement."
+        />
+        <InsightCard
+          eyebrow="Catalog"
+          title="Low stock"
+          value={dashboard.products.filter((product) => product.status === "Low Stock").length}
+          description="Products needing inventory attention before they impact conversion."
+        />
+        <InsightCard
+          eyebrow="Offers"
+          title="Campaign tabs"
+          value={dashboard.offerTabs.length}
+          description="Offer structures imported from the storefront for campaign planning."
+        />
+      </section>
+
       <section className="content-grid">
         <div className="primary-column">
           <DashboardSection
             title="Product catalog"
-            subtitle="A dedicated area for inventory, pricing, and publish status."
+            subtitle="Products carried over from the existing React storefront data."
           >
             <DataTable
-              columns={["Product", "Category", "Inventory", "Price", "Status", "Action"]}
-              rows={products.map((product) => (
+              columns={["Product", "Category", "Price", "Inventory", "Sales", "Status"]}
+              rows={dashboard.products.map((product) => (
                 <tr key={product.id}>
                   <td>
                     <div className="identity-cell">
@@ -26,20 +46,12 @@ function ProductsPage({
                       <span>{product.id}</span>
                     </div>
                   </td>
-                  <td>{product.category}</td>
+                  <td>{product.categoryName}</td>
+                  <td>${product.price}</td>
                   <td>{product.inventory}</td>
-                  <td>{product.price}</td>
+                  <td>{product.sales}</td>
                   <td>
-                    <StatusBadge value={product.status} statusToneMap={statusToneMap} />
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      className="table-action"
-                      onClick={() => cycleProductStatus(product.id)}
-                    >
-                      Change status
-                    </button>
+                    <StatusBadge value={product.status} toneMap={dashboard.toneMap} />
                   </td>
                 </tr>
               ))}
@@ -49,73 +61,30 @@ function ProductsPage({
 
         <div className="secondary-column">
           <DashboardSection
-            title="Add new product"
-            subtitle="Create a new catalog entry without leaving the products page."
+            title="Offer planning"
+            subtitle="Promotional structures already used in the storefront."
           >
-            <form className="form-card" onSubmit={handleProductSubmit}>
-              <label>
-                Product name
-                <input
-                  value={productForm.name}
-                  onChange={(event) =>
-                    setProductForm((current) => ({
-                      ...current,
-                      name: event.target.value,
-                    }))
-                  }
-                  placeholder="Product title"
-                />
-              </label>
-              <label>
-                Category
-                <select
-                  value={productForm.category}
-                  onChange={(event) =>
-                    setProductForm((current) => ({
-                      ...current,
-                      category: event.target.value,
-                    }))
-                  }
-                >
-                  <option>Productivity</option>
-                  <option>Wellness</option>
-                  <option>Analytics</option>
-                  <option>Collaboration</option>
-                </select>
-              </label>
-              <div className="split-fields">
-                <label>
-                  Inventory
-                  <input
-                    type="number"
-                    value={productForm.inventory}
-                    onChange={(event) =>
-                      setProductForm((current) => ({
-                        ...current,
-                        inventory: event.target.value,
-                      }))
-                    }
-                    placeholder="0"
-                  />
-                </label>
-                <label>
-                  Price
-                  <input
-                    value={productForm.price}
-                    onChange={(event) =>
-                      setProductForm((current) => ({
-                        ...current,
-                        price: event.target.value,
-                      }))
-                    }
-                    placeholder="$00"
-                  />
-                </label>
-              </div>
-              <button type="submit" className="primary-button">
-                Create product
-              </button>
-            </form>
+            <div className="pill-grid">
+              {dashboard.offerTabs.map((tab) => (
+                <span key={tab} className="filter-pill">
+                  {tab}
+                </span>
+              ))}
+            </div>
+          </DashboardSection>
+
+          <DashboardSection
+            title="Homepage highlights"
+            subtitle="Current storefront messaging ready for admin review."
+          >
+            <div className="activity-list">
+              {dashboard.homeHighlights.map((item) => (
+                <article key={item} className="activity-item">
+                  <span className="activity-dot" />
+                  <p>{item}</p>
+                </article>
+              ))}
+            </div>
           </DashboardSection>
         </div>
       </section>
