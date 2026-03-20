@@ -14,14 +14,17 @@ export function DashboardProvider({ children }) {
           {
             id: `p${current.products.length + 1}`,
             name: form.name,
-            categoryId: form.categoryId,
-            categoryName: form.categoryName,
+            categoryId: form.primaryCategoryId,
+            categoryName: form.primaryCategoryName,
+            categoryIds: form.categoryIds,
+            categoryNames: form.categoryNames,
             price: Number(form.price),
             rating: 4.5,
             imageUrl: form.imageUrl,
             description: form.description,
             inventory: Number(form.inventory),
             status: form.status,
+            offerTags: form.offerTags,
             sales: 0,
           },
           ...current.products,
@@ -41,6 +44,19 @@ export function DashboardProvider({ children }) {
         ...current,
         products: current.products.filter((product) => product.id !== productId),
       }));
+    },
+    addOfferTab(label) {
+      const nextLabel = label.trim();
+      if (!nextLabel) return;
+
+      setState((current) =>
+        current.offerTabs.includes(nextLabel)
+          ? current
+          : {
+              ...current,
+              offerTabs: [...current.offerTabs, nextLabel],
+            },
+      );
     },
     approveUser(userId) {
       setState((current) => ({

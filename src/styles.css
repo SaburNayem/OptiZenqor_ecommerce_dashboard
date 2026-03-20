@@ -305,6 +305,7 @@ p {
 .stat-card small,
 .section-heading p,
 .identity-cell span,
+.field-label,
 label,
 th,
 .activity-item p,
@@ -481,6 +482,19 @@ th {
   gap: 4px;
 }
 
+.product-cell {
+  grid-template-columns: 56px 1fr;
+  align-items: center;
+}
+
+.product-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 14px;
+  grid-row: 1 / span 2;
+}
+
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -543,6 +557,34 @@ th {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.selector-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.selector-pill {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid rgba(162, 136, 98, 0.24);
+  border-radius: 999px;
+  background: #fffdf8;
+  color: var(--ink);
+}
+
+.selector-pill.active {
+  background: rgba(15, 138, 112, 0.12);
+  border-color: rgba(15, 138, 112, 0.34);
+  color: var(--brand-deep);
+  font-weight: 700;
+}
+
+.selector-pill.active.offer {
+  background: rgba(223, 138, 59, 0.14);
+  border-color: rgba(223, 138, 59, 0.4);
 }
 
 .filter-pill {
@@ -651,6 +693,35 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.inline-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.compact-button {
+  min-height: 52px;
+  padding: 0 18px;
+}
+
+.image-preview-card {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid rgba(162, 136, 98, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 253, 248, 0.7);
+}
+
+.image-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 14px;
 }
 
 .primary-button {

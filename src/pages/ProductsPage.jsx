@@ -6,37 +6,39 @@ import InsightCard from "../shared/ui/InsightCard";
 import { categories } from "../store/data/catalog";
 import { useDashboard } from "../store/DashboardContext";
 
+const defaultImage =
+  "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=900&q=80";
+
+function getInitialForm() {
+  return {
+    name: "",
+    categoryIds: [categories[0].id],
+    categoryNames: [categories[0].name],
+    primaryCategoryId: categories[0].id,
+    primaryCategoryName: categories[0].name,
+    offerTags: [],
+    price: "",
+    inventory: "",
+    imageUrl: defaultImage,
+    description: "",
+    status: "Draft",
+  };
+}
+
 function ProductsPage() {
   const dashboard = useDashboard();
   const [editingId, setEditingId] = useState("");
-  const [form, setForm] = useState({
-    name: "",
-    categoryId: categories[0].id,
-    categoryName: categories[0].name,
-    price: "",
-    inventory: "",
-    imageUrl: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=900&q=80",
-    description: "",
-    status: "Draft",
-  });
+  const [form, setForm] = useState(getInitialForm);
+  const [newOfferTab, setNewOfferTab] = useState("");
 
   function resetForm() {
     setEditingId("");
-    setForm({
-      name: "",
-      categoryId: categories[0].id,
-      categoryName: categories[0].name,
-      price: "",
-      inventory: "",
-      imageUrl: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=900&q=80",
-      description: "",
-      status: "Draft",
-    });
+    setForm(getInitialForm());
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (!form.name || !form.price || !form.inventory) return;
+    if (!form.name || !form.price || !form.inventory || !form.categoryIds.length) return;
 
     if (editingId) {
       dashboard.updateProduct(editingId, {
@@ -55,14 +57,66 @@ function ProductsPage() {
     setEditingId(product.id);
     setForm({
       name: product.name,
-      categoryId: product.categoryId,
-      categoryName: product.categoryName,
+      categoryIds: product.categoryIds ?? [product.categoryId],
+      categoryNames: product.categoryNames ?? [product.categoryName],
+      primaryCategoryId: product.categoryId,
+      primaryCategoryName: product.categoryName,
+      offerTags: product.offerTags ?? [],
       price: String(product.price),
       inventory: String(product.inventory),
       imageUrl: product.imageUrl,
       description: product.description,
       status: product.status,
     });
+  }
+
+  function toggleCategory(category) {
+    setForm((current) => {
+      const exists = current.categoryIds.includes(category.id);
+      const categoryIds = exists
+        ? current.categoryIds.filter((id) => id !== category.id)
+        : [...current.categoryIds, category.id];
+      const categoryNames = categories
+        .filter((item) => categoryIds.includes(item.id))
+        .map((item) => item.name);
+
+      const primaryCategoryId = categoryIds.includes(current.primaryCategoryId)
+        ? current.primaryCategoryId
+        : categoryIds[0] || categories[0].id;
+      const primaryCategoryName =
+        categories.find((item) => item.id === primaryCategoryId)?.name || categories[0].name;
+
+      return {
+        ...current,
+        categoryIds,
+        categoryNames,
+        primaryCategoryId,
+        primaryCategoryName,
+      };
+    });
+  }
+
+  function toggleOfferTab(tab) {
+    setForm((current) => ({
+      ...current,
+      offerTags: current.offerTags.includes(tab)
+        ? current.offerTags.filter((item) => item !== tab)
+        : [...current.offerTags, tab],
+    }));
+  }
+
+  function handleImageFileChange(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    setForm((current) => ({ ...current, imageUrl: previewUrl }));
+  }
+
+  function handleAddOfferTab(event) {
+    event.preventDefault();
+    if (!newOfferTab.trim()) return;
+    dashboard.addOfferTab(newOfferTab);
+    setNewOfferTab("");
   }
 
   return (
@@ -95,19 +149,20 @@ function ProductsPage() {
             subtitle="Products carried over from the existing React storefront data."
           >
             <DataTable
-              columns={["Product", "Category", "Price", "Inventory", "Sales", "Status", "Actions"]}
+              columns={["Product", "Primary", "Multi category", "Offers", "Price", "Status", "Actions"]}
               rows={dashboard.products.map((product) => (
                 <tr key={product.id}>
                   <td>
-                    <div className="identity-cell">
+                    <div className="identity-cell product-cell">
+                      <img src={product.imageUrl} alt={product.name} className="product-thumb" />
                       <strong>{product.name}</strong>
                       <span>{product.id}</span>
                     </div>
                   </td>
                   <td>{product.categoryName}</td>
+                  <td>{(product.categoryNames ?? [product.categoryName]).join(", ")}</td>
+                  <td>{product.offerTags?.length ? product.offerTags.join(", ") : "None"}</td>
                   <td>${product.price}</td>
-                  <td>{product.inventory}</td>
-                  <td>{product.sales}</td>
                   <td>
                     <StatusBadge value={product.status} toneMap={dashboard.toneMap} />
                   </td>
@@ -142,25 +197,57 @@ function ProductsPage() {
                 <input value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} />
               </label>
               <label>
-                Category
+                Primary category
                 <select
-                  value={form.categoryId}
+                  value={form.primaryCategoryId}
                   onChange={(event) => {
                     const selected = categories.find((item) => item.id === event.target.value);
                     setForm((current) => ({
                       ...current,
-                      categoryId: event.target.value,
-                      categoryName: selected?.name || "",
+                      primaryCategoryId: event.target.value,
+                      primaryCategoryName: selected?.name || "",
                     }));
                   }}
                 >
-                  {categories.map((category) => (
+                  {categories
+                    .filter((category) => form.categoryIds.includes(category.id))
+                    .map((category) => (
                     <option key={category.id} value={category.id}>
                       {category.name}
                     </option>
-                  ))}
+                    ))}
                 </select>
               </label>
+              <div>
+                <span className="field-label">Choose multiple categories</span>
+                <div className="selector-grid">
+                  {categories.map((category) => (
+                    <button
+                      key={category.id}
+                      type="button"
+                      className={`selector-pill ${form.categoryIds.includes(category.id) ? "active" : ""}`}
+                      onClick={() => toggleCategory(category)}
+                    >
+                      {category.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <span className="field-label">Choose offer tabs</span>
+                <div className="selector-grid">
+                  {dashboard.offerTabs.map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      className={`selector-pill ${form.offerTags.includes(tab) ? "active offer" : ""}`}
+                      onClick={() => toggleOfferTab(tab)}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="split-fields">
                 <label>
                   Price
@@ -184,6 +271,17 @@ function ProductsPage() {
                 <input value={form.imageUrl} onChange={(event) => setForm((current) => ({ ...current, imageUrl: event.target.value }))} />
               </label>
               <label>
+                Upload image directly
+                <input type="file" accept="image/*" onChange={handleImageFileChange} />
+              </label>
+              <div className="image-preview-card">
+                <img src={form.imageUrl} alt="Product preview" className="image-preview" />
+                <div>
+                  <strong>Preview</strong>
+                  <p>This uses the direct image URL or uploaded local image preview.</p>
+                </div>
+              </div>
+              <label>
                 Description
                 <textarea value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} />
               </label>
@@ -202,8 +300,18 @@ function ProductsPage() {
 
           <DashboardSection
             title="Offer planning"
-            subtitle="Promotional structures already used in the storefront."
+            subtitle="Promotional structures already used in the storefront, with admin add support."
           >
+            <form className="inline-form" onSubmit={handleAddOfferTab}>
+              <input
+                value={newOfferTab}
+                onChange={(event) => setNewOfferTab(event.target.value)}
+                placeholder="Add new offer tab"
+              />
+              <button type="submit" className="primary-button compact-button">
+                Add offer
+              </button>
+            </form>
             <div className="pill-grid">
               {dashboard.offerTabs.map((tab) => (
                 <span key={tab} className="filter-pill">

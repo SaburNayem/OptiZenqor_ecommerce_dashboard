@@ -1,6 +1,6 @@
 import { accountActions, users as seedUsers } from "./data/customers";
 import { contentHighlights, drawerItems, posts as seedPosts } from "./data/content";
-import { categories, homeHighlights, offerTabs, products as seedProducts } from "./data/catalog";
+import { categories, homeHighlights, offerTabs as seedOfferTabs, products as seedProducts } from "./data/catalog";
 import {
   activityFeed,
   apiConfig,
@@ -35,7 +35,12 @@ export const initialChatThreads = [
 
 export function createSeedState() {
   return {
-    products: seedProducts,
+    products: seedProducts.map((product) => ({
+      ...product,
+      categoryIds: product.categoryIds ?? [product.categoryId],
+      categoryNames: product.categoryNames ?? [product.categoryName],
+      offerTags: product.offerTags ?? [],
+    })),
     users: seedUsers,
     posts: seedPosts.map((post) => ({
       ...post,
@@ -43,13 +48,16 @@ export function createSeedState() {
     })),
     features: seedFeatures,
     chatThreads: initialChatThreads,
+    offerTabs: seedOfferTabs,
   };
 }
 
 export function buildDashboardView(state) {
   const categoryCounts = categories.map((category) => ({
     ...category,
-    productCount: state.products.filter((product) => product.categoryId === category.id).length,
+    productCount: state.products.filter((product) =>
+      (product.categoryIds ?? [product.categoryId]).includes(category.id),
+    ).length,
   }));
 
   const stats = [
@@ -96,7 +104,7 @@ export function buildDashboardView(state) {
     features: state.features,
     chatThreads: state.chatThreads,
     activityFeed,
-    offerTabs,
+    offerTabs: state.offerTabs,
     homeHighlights,
     accountActions,
     drawerItems,
