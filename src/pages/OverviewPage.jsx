@@ -1,11 +1,11 @@
-import { useOutletContext } from "react-router-dom";
 import InsightCard from "../shared/ui/InsightCard";
 import DashboardSection from "../shared/ui/DashboardSection";
 import SummaryGrid from "../shared/ui/SummaryGrid";
 import StatusBadge from "../shared/ui/StatusBadge";
+import { useDashboard } from "../store/DashboardContext";
 
 function OverviewPage() {
-  const dashboard = useOutletContext();
+  const dashboard = useDashboard();
 
   return (
     <div className="page-stack">

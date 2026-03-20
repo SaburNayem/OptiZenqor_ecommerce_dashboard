@@ -1,10 +1,12 @@
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { signOut } from "../../features/auth/auth";
+import { useDashboard } from "../../store/DashboardContext";
 import { navigationItems, pageMeta } from "../../shared/config/navigation";
 
-function DashboardLayout({ dashboard }) {
+function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
+  const dashboard = useDashboard();
   const currentMeta = pageMeta[location.pathname] ?? pageMeta["/"];
 
   function handleLogout() {
@@ -108,7 +110,7 @@ function DashboardLayout({ dashboard }) {
           </div>
         </section>
 
-        <Outlet context={dashboard} />
+        <Outlet />
       </main>
     </div>
   );

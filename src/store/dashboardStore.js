@@ -1,12 +1,55 @@
-import { accountActions, users } from "./data/customers";
-import { contentHighlights, drawerItems, posts } from "./data/content";
-import { categories, homeHighlights, offerTabs, products } from "./data/catalog";
-import { activityFeed, apiConfig, authFlows, features, toneMap } from "./data/system";
+import { accountActions, users as seedUsers } from "./data/customers";
+import { contentHighlights, drawerItems, posts as seedPosts } from "./data/content";
+import { categories, homeHighlights, offerTabs, products as seedProducts } from "./data/catalog";
+import {
+  activityFeed,
+  apiConfig,
+  authFlows,
+  features as seedFeatures,
+  toneMap,
+} from "./data/system";
 
-export function createDashboardStore() {
+export const initialChatThreads = [
+  {
+    id: "chat-1",
+    customerName: "Nafisa Rahman",
+    channel: "Website chat",
+    orderRef: "ORD-1204",
+    status: "Open",
+    messages: [
+      { id: "m1", sender: "customer", text: "My order is delayed. Can you check?", time: "09:20" },
+      { id: "m2", sender: "admin", text: "Checking this for you now.", time: "09:24" },
+    ],
+  },
+  {
+    id: "chat-2",
+    customerName: "Arif Hasan",
+    channel: "Support inbox",
+    orderRef: "ORD-1281",
+    status: "Pending",
+    messages: [
+      { id: "m3", sender: "customer", text: "Can I change my delivery address?", time: "11:05" },
+    ],
+  },
+];
+
+export function createSeedState() {
+  return {
+    products: seedProducts,
+    users: seedUsers,
+    posts: seedPosts.map((post) => ({
+      ...post,
+      status: post.status === "Published" ? "Approved" : post.status,
+    })),
+    features: seedFeatures,
+    chatThreads: initialChatThreads,
+  };
+}
+
+export function buildDashboardView(state) {
   const categoryCounts = categories.map((category) => ({
     ...category,
-    productCount: products.filter((product) => product.categoryId === category.id).length,
+    productCount: state.products.filter((product) => product.categoryId === category.id).length,
   }));
 
   const stats = [
@@ -17,41 +60,41 @@ export function createDashboardStore() {
     },
     {
       label: "Products",
-      value: products.length,
-      change: `${products.filter((item) => item.status === "Published").length} live in catalog`,
+      value: state.products.length,
+      change: `${state.products.filter((item) => item.status === "Published").length} live in catalog`,
     },
     {
       label: "Customers",
-      value: users.length,
-      change: `${users.filter((item) => item.status === "Active").length} active accounts`,
+      value: state.users.length,
+      change: `${state.users.filter((item) => item.status === "Active").length} active accounts`,
     },
     {
-      label: "Endpoints",
-      value: apiConfig.endpoints.length,
-      change: `${authFlows.length} auth flows monitored`,
+      label: "Chats",
+      value: state.chatThreads.length,
+      change: `${state.chatThreads.filter((item) => item.status !== "Closed").length} unresolved threads`,
     },
   ];
 
   const pendingActions =
-    products.filter((product) => product.status !== "Published").length +
-    posts.filter((post) => post.status !== "Published").length +
-    users.filter((user) => user.status !== "Active").length +
-    features.filter((feature) => !feature.enabled).length;
-
-  const systemSnapshot = {
-    liveRoutes: 7,
-    apiCount: apiConfig.endpoints.length,
-  };
+    state.products.filter((product) => product.status !== "Published").length +
+    state.posts.filter((post) => post.status !== "Approved").length +
+    state.users.filter((user) => user.status !== "Active").length +
+    state.features.filter((feature) => !feature.enabled).length +
+    state.chatThreads.filter((thread) => thread.status !== "Closed").length;
 
   return {
     stats,
     pendingActions,
-    systemSnapshot,
+    systemSnapshot: {
+      liveRoutes: 8,
+      apiCount: apiConfig.endpoints.length,
+    },
     categories: categoryCounts,
-    products,
-    users,
-    posts,
-    features,
+    products: state.products,
+    users: state.users,
+    posts: state.posts,
+    features: state.features,
+    chatThreads: state.chatThreads,
     activityFeed,
     offerTabs,
     homeHighlights,

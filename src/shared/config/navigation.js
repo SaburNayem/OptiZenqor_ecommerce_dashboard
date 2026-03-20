@@ -5,6 +5,7 @@ export const navigationItems = [
   { to: "/customers", label: "Customers", helper: "Users and support" },
   { to: "/content", label: "Content", helper: "Posts and promo" },
   { to: "/features", label: "Features", helper: "Flags and rollout" },
+  { to: "/chat", label: "Chat", helper: "Support inbox" },
   { to: "/system", label: "System", helper: "Auth and API health" },
 ];
 
@@ -85,6 +86,19 @@ export const pageMeta = {
       { label: "Mobile + web", value: "Flags mapped to storefront and app surfaces" },
       { label: "Exposure", value: "Internal, Pro, All users, and beta scopes" },
       { label: "Rollout", value: "Progressive delivery readiness for each feature" },
+    ],
+  },
+  "/chat": {
+    eyebrow: "Support inbox",
+    title: "Chat",
+    description: "Handle customer support conversations and order-related questions from a dedicated admin inbox.",
+    heroTitle: "Customer chat now lives inside the admin dashboard.",
+    heroCopy:
+      "Support conversations, replies, and resolution status are now separated into their own workspace so admins can answer users without mixing that work into product or content operations.",
+    highlights: [
+      { label: "Threads", value: "Open, pending, and closed support conversations" },
+      { label: "Replies", value: "Admin responses added directly in the dashboard" },
+      { label: "Resolution", value: "Chats can be closed after support is complete" },
     ],
   },
   "/system": {

@@ -46,7 +46,8 @@ a {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -513,7 +514,8 @@ th {
 
 .table-action,
 .primary-button,
-.toggle-pill {
+.toggle-pill,
+.secondary-button {
   border: none;
   border-radius: 14px;
 }
@@ -523,6 +525,12 @@ th {
   background: rgba(15, 138, 112, 0.1);
   color: var(--brand-deep);
   font-weight: 700;
+}
+
+.table-action.danger,
+.secondary-button {
+  background: rgba(208, 91, 77, 0.12);
+  color: var(--danger);
 }
 
 .feature-list,
@@ -611,7 +619,8 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
   min-height: 52px;
   border: 1px solid rgba(162, 136, 98, 0.24);
   border-radius: 16px;
@@ -622,13 +631,26 @@ select {
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   border-color: rgba(15, 138, 112, 0.55);
   box-shadow: 0 0 0 4px rgba(15, 138, 112, 0.08);
 }
 
+textarea {
+  min-height: 120px;
+  padding-block: 14px;
+  resize: vertical;
+}
+
 .split-fields {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .primary-button {
@@ -662,6 +684,68 @@ select:focus {
   flex-shrink: 0;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--brand), var(--accent));
+}
+
+.chat-list,
+.chat-messages {
+  display: grid;
+  gap: 12px;
+}
+
+.chat-thread {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(162, 136, 98, 0.18);
+  background: #fffdf8;
+  text-align: left;
+}
+
+.chat-thread.active {
+  border-color: rgba(15, 138, 112, 0.4);
+  box-shadow: 0 0 0 4px rgba(15, 138, 112, 0.08);
+}
+
+.chat-thread p {
+  color: var(--muted);
+}
+
+.chat-bubble {
+  max-width: 88%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(112, 99, 86, 0.08);
+}
+
+.chat-bubble.admin {
+  margin-left: auto;
+  background: rgba(15, 138, 112, 0.12);
+}
+
+.chat-bubble strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.chat-bubble p {
+  line-height: 1.55;
+}
+
+.chat-bubble span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.chat-form {
+  margin-top: 16px;
+  display: grid;
+  gap: 12px;
 }
 
 @media (max-width: 1180px) {

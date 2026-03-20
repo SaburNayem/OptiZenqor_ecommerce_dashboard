@@ -1,11 +1,11 @@
-import { useOutletContext } from "react-router-dom";
 import DashboardSection from "../shared/ui/DashboardSection";
 import DataTable from "../shared/ui/DataTable";
 import InsightCard from "../shared/ui/InsightCard";
 import StatusBadge from "../shared/ui/StatusBadge";
+import { useDashboard } from "../store/DashboardContext";
 
 function ContentPage() {
-  const dashboard = useOutletContext();
+  const dashboard = useDashboard();
 
   return (
     <div className="page-stack">
@@ -16,7 +16,7 @@ function ContentPage() {
             subtitle="Post workflow informed by existing blog, guide, and promotional content structures."
           >
             <DataTable
-              columns={["Post", "Author", "Channel", "Reach", "Publish date", "Status"]}
+              columns={["Post", "Author", "Channel", "Reach", "Publish date", "Status", "Actions"]}
               rows={dashboard.posts.map((post) => (
                 <tr key={post.id}>
                   <td>
@@ -31,6 +31,16 @@ function ContentPage() {
                   <td>{post.publishedAt}</td>
                   <td>
                     <StatusBadge value={post.status} toneMap={dashboard.toneMap} />
+                  </td>
+                  <td>
+                    <div className="action-row">
+                      <button type="button" className="table-action" onClick={() => dashboard.approvePost(post.id)}>
+                        Accept
+                      </button>
+                      <button type="button" className="table-action danger" onClick={() => dashboard.rejectPost(post.id)}>
+                        Reject
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

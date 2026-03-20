@@ -1,10 +1,10 @@
-import { useOutletContext } from "react-router-dom";
 import DashboardSection from "../shared/ui/DashboardSection";
 import DataTable from "../shared/ui/DataTable";
 import StatusBadge from "../shared/ui/StatusBadge";
+import { useDashboard } from "../store/DashboardContext";
 
 function SystemPage() {
-  const dashboard = useOutletContext();
+  const dashboard = useDashboard();
 
   return (
     <div className="page-stack">

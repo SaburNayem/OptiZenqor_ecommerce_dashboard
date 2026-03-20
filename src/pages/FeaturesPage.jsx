@@ -1,8 +1,8 @@
-import { useOutletContext } from "react-router-dom";
 import DashboardSection from "../shared/ui/DashboardSection";
+import { useDashboard } from "../store/DashboardContext";
 
 function FeaturesPage() {
-  const dashboard = useOutletContext();
+  const dashboard = useDashboard();
 
   return (
     <div className="page-stack">

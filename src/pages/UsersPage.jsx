@@ -1,11 +1,11 @@
-import { useOutletContext } from "react-router-dom";
 import DashboardSection from "../shared/ui/DashboardSection";
 import DataTable from "../shared/ui/DataTable";
 import InsightCard from "../shared/ui/InsightCard";
 import StatusBadge from "../shared/ui/StatusBadge";
+import { useDashboard } from "../store/DashboardContext";
 
 function UsersPage() {
-  const dashboard = useOutletContext();
+  const dashboard = useDashboard();
 
   return (
     <div className="page-stack">
@@ -16,7 +16,7 @@ function UsersPage() {
             subtitle="Users, plan access, order activity, and support visibility aligned to your app account flow."
           >
             <DataTable
-              columns={["User", "Role", "Plan", "Orders", "Favorites", "Status"]}
+              columns={["User", "Role", "Plan", "Orders", "Favorites", "Status", "Actions"]}
               rows={dashboard.users.map((user) => (
                 <tr key={user.id}>
                   <td>
@@ -31,6 +31,16 @@ function UsersPage() {
                   <td>{user.favorites}</td>
                   <td>
                     <StatusBadge value={user.status} toneMap={dashboard.toneMap} />
+                  </td>
+                  <td>
+                    <div className="action-row">
+                      <button type="button" className="table-action" onClick={() => dashboard.approveUser(user.id)}>
+                        Accept
+                      </button>
+                      <button type="button" className="table-action danger" onClick={() => dashboard.rejectUser(user.id)}>
+                        Reject
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
