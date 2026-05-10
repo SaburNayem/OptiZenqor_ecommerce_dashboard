@@ -155,7 +155,7 @@ function AppControlPage() {
               <div className="feature-topline">
                 <div>
                   <h3>{product.name}</h3>
-                  <p>{product.primaryCategory?.name || "No category"} · {product.status}</p>
+                  <p>{`${product.primaryCategory?.name || "No category"} · ${product.status}`}</p>
                 </div>
                 <button
                   type="button"

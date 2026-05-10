@@ -29,16 +29,16 @@ function CatalogPage() {
 
   async function load() {
     try {
-      const [products, categories] = await Promise.all([
+      const [products, appControl] = await Promise.all([
         adminRequest("/admin/products"),
-        adminRequest("/categories"),
+        adminRequest("/admin/app-control"),
       ]);
 
       setState({
         loading: false,
         error: "",
         products,
-        categories,
+        categories: appControl.categories || [],
       });
     } catch (error) {
       setState((current) => ({ ...current, loading: false, error: error.message || "Unable to load catalog." }));

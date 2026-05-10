@@ -24,7 +24,7 @@ export const pageMeta = {
     highlights: [
       { label: "11 routes", value: "Admin surfaces connected under one protected shell" },
       { label: "App + web", value: "Shared operational view across both customer channels" },
-      { label: "API-ready", value: "Services prepared for future backend integration" },
+      { label: "API live", value: "Services connected to the current backend integration layer" },
     ],
   },
   "/catalog": {
@@ -85,7 +85,7 @@ export const pageMeta = {
     description: "Track order status and fulfillment progress for app and storefront transactions.",
     heroTitle: "Orders now live in a dedicated admin surface.",
     heroCopy:
-      "This page is designed for future order API integration while already supporting status review and detail inspection through seeded local data.",
+      "This page reviews live order records from the backend and supports status updates for fulfillment operations.",
     highlights: [
       { label: "Statuses", value: "Pending through refunded workflows covered" },
       { label: "Sources", value: "Website and app orders shown together" },
@@ -124,7 +124,7 @@ export const pageMeta = {
     description: "Ship capabilities progressively with real local flag mutation and rollout controls.",
     heroTitle: "Feature rollout is now interactive instead of read-only.",
     heroCopy:
-      "Enabled state, rollout percentages, and environment targeting can all be adjusted now, while still remaining local and ready for API replacement later.",
+      "Enabled state, rollout percentages, and environment targeting can all be adjusted through the current backend feature flag APIs.",
     highlights: [
       { label: "Toggle", value: "Local enable and disable control now active" },
       { label: "Rollout", value: "Editable percentage for staged delivery" },
@@ -150,7 +150,7 @@ export const pageMeta = {
     description: "Track health cards, endpoint visibility, auth flow status, and environment configuration.",
     heroTitle: "System monitoring is clearer and more operational.",
     heroCopy:
-      "Mock health checks, endpoint tables, and environment cards prepare the dashboard for future API-backed monitoring without changing the current local setup.",
+      "Health checks, endpoint tables, and environment cards give the dashboard a clearer operational view of the current backend setup.",
     highlights: [
       { label: "Health", value: "Health cards summarize key technical surfaces" },
       { label: "Endpoints", value: "Status and latency shown together" },
@@ -163,11 +163,11 @@ export const pageMeta = {
     description: "Control admin identity, notifications, dashboard preferences, and API configuration.",
     heroTitle: "Admin preferences and platform configuration now have a dedicated home.",
     heroCopy:
-      "Settings is structured as a mock form today so it can later connect to real profile, preference, and system configuration APIs without a page redesign.",
+      "Settings now works as the admin surface for live system configuration while leaving room for deeper profile and preference controls later.",
     highlights: [
       { label: "Profile", value: "Admin identity and title fields available" },
       { label: "Preferences", value: "Theme, density, and notifications included" },
-      { label: "API", value: "Mock base URL setting ready for service migration" },
+      { label: "API", value: "Live config values available for service management" },
     ],
   },
 };
