@@ -44,7 +44,7 @@ function SystemPage() {
 
       <DashboardSection
         title="Authentication service flow"
-        subtitle="These responses reflect the current mock service behavior inside the Flutter app."
+        subtitle="These responses reflect the current authentication and account service behavior exposed to the apps."
       >
         <DataTable
           columns={["Flow", "Behavior", "Status"]}

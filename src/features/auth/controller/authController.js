@@ -26,7 +26,7 @@ export function useAuthController() {
       await signIn(form.email, form.password);
       navigate(location.state?.from || appRoutes.overview, { replace: true });
     } catch (error) {
-      setSubmitError("Use the demo admin credentials to enter the dashboard.");
+      setSubmitError(error.message || "Unable to sign in with the provided admin account.");
       console.error("Unable to sign in:", error);
     }
   }
