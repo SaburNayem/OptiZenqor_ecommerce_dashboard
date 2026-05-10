@@ -31,6 +31,10 @@ export async function adminRequest(path, options = {}) {
   const json = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    if (response.status === 401) {
+      clearStoredToken();
+      window.localStorage.removeItem("optizenqor_admin_session");
+    }
     throw new Error(json?.message || json?.error || `Request failed for ${path}`);
   }
 

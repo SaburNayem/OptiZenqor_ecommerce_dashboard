@@ -26,9 +26,18 @@ function OrdersPage() {
   }, []);
 
   async function updateStatus(orderId, status) {
+    const paymentStatus =
+      status === "PAID" || status === "DELIVERED"
+        ? "PAID"
+        : status === "REFUNDED"
+          ? "REFUNDED"
+          : status === "CANCELLED"
+            ? "FAILED"
+            : undefined;
+
     await adminRequest(`/orders/${orderId}/status`, {
       method: "PATCH",
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ status, paymentStatus }),
     });
     await load(orderId);
   }
@@ -64,8 +73,8 @@ function OrdersPage() {
               <div className="feature-list">
                 <article className="feature-card">
                   <h3>{activeOrder.orderNumber}</h3>
-                  <p>{activeOrder.user.fullName} · {activeOrder.user.email}</p>
-                  <p>{activeOrder.status} · {activeOrder.paymentStatus}</p>
+                  <p>{`${activeOrder.user.fullName} · ${activeOrder.user.email}`}</p>
+                  <p>{`${activeOrder.status} · ${activeOrder.paymentStatus}`}</p>
                 </article>
                 <article className="feature-card">
                   <h3>Status control</h3>
